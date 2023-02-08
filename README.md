@@ -1,4 +1,8 @@
+
+
 # HW 4: Prim's algorithm
+
+[![Python package testing](https://github.com/hrscott/hw4-prim-mst/actions/workflows/python-package.yml/badge.svg)](https://github.com/hrscott/hw4-prim-mst/actions/workflows/python-package.yml)
 
 In this assignment, you'll implement Prim's algorithm, a non-trivial greedy algorithm used to construct minimum spanning trees. 
 
