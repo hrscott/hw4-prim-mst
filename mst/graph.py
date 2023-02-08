@@ -7,7 +7,7 @@ class Graph:
     def __init__(self, adjacency_mat: Union[np.ndarray, str]):
         """
     
-        Unlike the BFS assignment, this Graph class takes an adjacency matrix as input. `adjacency_mat` 
+        This Graph class takes an adjacency matrix as input. `adjacency_mat` 
         can either be a 2D numpy array of floats or a path to a CSV file containing a 2D numpy array of floats.
 
         In this project, we will assume `adjacency_mat` corresponds to the adjacency matrix of an undirected graph.
@@ -26,19 +26,47 @@ class Graph:
             return np.loadtxt(f, delimiter=',')
 
     def construct_mst(self):
-        """
-    
-        TODO: Given `self.adj_mat`, the adjacency matrix of a connected undirected graph, implement Prim's 
-        algorithm to construct an adjacency matrix encoding the minimum spanning tree of `self.adj_mat`. 
-            
-        `self.adj_mat` is a 2D numpy array of floats. Note that because we assume our input graph is
-        undirected, `self.adj_mat` is symmetric. Row i and column j represents the edge weight between
-        vertex i and vertex j. An edge weight of zero indicates that no edge exists. 
+        n = len(self.adj_mat)
+        mst = np.zeros((n, n))
+        visited = [False] * n
+        min_edges = [(float('inf'), 0, 0) for i in range(n)]
+        heap = []
         
-        This function does not return anything. Instead, store the adjacency matrix representation
-        of the minimum spanning tree of `self.adj_mat` in `self.mst`. We highly encourage the
-        use of priority queues in your implementation. Refer to the heapq module, particularly the 
-        `heapify`, `heappop`, and `heappush` functions.
+        # Start the MST with vertex 0
+        heapq.heappush(heap, (0, 0, -1))
+        
+        while heap:
+            weight, u, v = heapq.heappop(heap)
+            if visited[u]:
+                continue
+            visited[u] = True
+            if v != -1:
+                mst[u][v] = weight
+                mst[v][u] = weight
+            for i in range(n):
+                if self.adj_mat[u][i] > 0 and not visited[i]:
+                    heapq.heappush(heap, (self.adj_mat[u][i], i, u))
+        self.mst = mst
 
-        """
-        self.mst = None
+    #some helper  helper functions for visualization
+    def visualize_mst(self):
+        graph = nx.Graph(mst)
+        pos = nx.spring_layout(graph)
+        nx.draw(graph, pos, with_labels=True)
+        labels = nx.get_edge_attributes(graph, 'weight')
+        nx.draw_networkx_edge_labels(graph, pos, edge_labels=labels)
+        plt.show()
+    
+    def visualize_graph(self):
+        G = nx.Graph(self.adj_mat)
+        pos = nx.spring_layout(G)
+        nx.draw_networkx_nodes(G, pos)
+        nx.draw_networkx_edges(G, pos)
+        nx.draw_networkx_labels(G, pos, font_size=20, font_family='sans-serif')
+        plt.show()
+    
+  
+     
+
+
+     
